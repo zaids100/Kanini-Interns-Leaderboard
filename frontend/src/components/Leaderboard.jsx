@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Trophy, Medal, Award, User, LogOut, Crown, Star } from 'lucide-react';
 import axios from 'axios';
-
+import { useUser } from '../contexts/UserContext'
+import { getAllInterns } from '../services/api';
 export default function Leaderboard({ token }) {
     const [interns, setInterns] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-
+    const { user } = useUser();
     useEffect(() => {
         const fetchInterns = async () => {
             try {
-                const res = await axios.get('http://localhost:3000/leaderboard/all', {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                const res = await getAllInterns(token);
                 setInterns(res.data.interns);
+                console.log(user);
             } catch (error) {
                 setInterns([]);
             } finally {
@@ -25,6 +25,7 @@ export default function Leaderboard({ token }) {
 
     const handleLogout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
         window.location.reload();
     };
 
@@ -43,6 +44,9 @@ export default function Leaderboard({ token }) {
 
     const getTotalScore = (scores) => {
         return scores.reduce((total, score) => total + score.score, 0);
+    };
+    const getMaxScore = (scores) => {
+        return scores.length * 100;
     };
 
     const sortedInterns = [...interns].sort((a, b) => getTotalScore(b.score) - getTotalScore(a.score));
@@ -77,13 +81,26 @@ export default function Leaderboard({ token }) {
                                 <p className="text-sm text-gray-600">Track achievements and scores</p>
                             </div>
                         </div>
-                        <button
-                            onClick={handleLogout}
-                            className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
-                        >
-                            <LogOut className="w-4 h-4" />
-                            <span>Logout</span>
-                        </button>
+
+                        <div className="flex items-center space-x-4">
+                            {/* Profile Button */}
+                            <button
+                                onClick={() => window.location.href = "/profile"}
+                                className="flex items-center space-x-2 px-4 py-2 bg-white hover:bg-gray-100 text-gray-700 rounded-lg border border-gray-200 transition-colors"
+                            >
+                                <User className="w-5 h-5" />
+                                <span>My Profile</span>
+                            </button>
+
+                            {/* Logout Button */}
+                            <button
+                                onClick={handleLogout}
+                                className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+                            >
+                                <LogOut className="w-4 h-4" />
+                                <span>Logout</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -132,65 +149,76 @@ export default function Leaderboard({ token }) {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-200">
-                                    {sortedInterns.map((intern, index) => (
-                                        <tr key={intern.ka_id} className="hover:bg-gray-50 transition-colors">
-                                            {/* Rank */}
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="flex items-center">
-                                                    {getRankIcon(index)}
-                                                </div>
-                                            </td>
+                                    {sortedInterns.map((intern, index) => {
+                                        const totalScore = getTotalScore(intern.score);
+                                        const maxScore = getMaxScore(intern.score);
+                                        const percentage = ((totalScore / maxScore) * 100).toFixed(1);
+                                        const isBottomFive = index >= sortedInterns.length - 5;
 
-                                            {/* Intern Info */}
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div>
-                                                    <div className="text-sm font-semibold text-gray-900">{intern.name}</div>
-                                                    <div className="text-sm text-gray-500">ID: {intern.ka_id}</div>
-                                                </div>
-                                            </td>
+                                        return (
+                                            <tr
+                                                key={intern.ka_id}
+                                                className={`transition-colors ${isBottomFive ? 'bg-red-50 hover:bg-red-100' : 'hover:bg-gray-50'
+                                                    }`}
+                                            >
+                                                {/* Rank */}
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div className="flex items-center">
+                                                        {getRankIcon(index)}
+                                                    </div>
+                                                </td>
 
-                                            {/* Achievements */}
-                                            <td className="px-6 py-4">
-                                                <div className="flex flex-wrap gap-1">
-                                                    {intern.achievements.length > 0 ? (
-                                                        intern.achievements.map((achievement, idx) => (
-                                                            <span
-                                                                key={idx}
-                                                                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
-                                                            >
-                                                                {achievement}
-                                                            </span>
-                                                        ))
-                                                    ) : (
-                                                        <span className="text-sm text-gray-400">No achievements yet</span>
-                                                    )}
-                                                </div>
-                                            </td>
+                                                {/* Intern Info */}
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div>
+                                                        <div className="text-sm font-semibold text-gray-900">{intern.name}</div>
+                                                        <div className="text-sm text-gray-500">ID: {intern.ka_id}</div>
+                                                    </div>
+                                                </td>
 
-                                            {/* Module Scores */}
-                                            <td className="px-6 py-4">
-                                                <div className="space-y-1">
-                                                    {intern.score.map((s) => (
-                                                        <div key={s.moduleNumber} className="flex items-center justify-between bg-gray-50 px-3 py-1 rounded-lg">
-                                                            <span className="text-sm text-gray-700 font-medium">
-                                                                {s.moduleName} (M{s.moduleNumber})
-                                                            </span>
-                                                            <span className="text-sm font-semibold text-blue-600">
-                                                                {s.score}
-                                                            </span>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </td>
+                                                {/* Achievements */}
+                                                <td className="px-6 py-4">
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {intern.achievements.length > 0 ? (
+                                                            intern.achievements.map((achievement, idx) => (
+                                                                <span
+                                                                    key={idx}
+                                                                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                                                                >
+                                                                    {achievement}
+                                                                </span>
+                                                            ))
+                                                        ) : (
+                                                            <span className="text-sm text-gray-400">No achievements yet</span>
+                                                        )}
+                                                    </div>
+                                                </td>
 
-                                            {/* Total Score */}
-                                            <td className="px-6 py-4 whitespace-nowrap text-right">
-                                                <div className="text-lg font-bold text-gray-900">
-                                                    {getTotalScore(intern.score)}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                                {/* Module Scores */}
+                                                <td className="px-6 py-4">
+                                                    <div className="space-y-1">
+                                                        {intern.score.map((s) => (
+                                                            <div key={s.moduleNumber} className="flex items-center justify-between bg-gray-50 px-3 py-1 rounded-lg">
+                                                                <span className="text-sm text-gray-700 font-medium">
+                                                                    {s.moduleName} (M{s.moduleNumber})
+                                                                </span>
+                                                                <span className="text-sm font-semibold text-blue-600">
+                                                                    {s.score}
+                                                                </span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </td>
+
+                                                {/* Total Score as Percentage */}
+                                                <td className="px-6 py-4 whitespace-nowrap text-right">
+                                                    <div className="text-lg font-bold text-gray-900">
+                                                        {percentage}%
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>

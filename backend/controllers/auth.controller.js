@@ -18,7 +18,7 @@ const login = async (req, res) => {
         }
         // Create JWT token
         const token = jwt.sign({ ka_id: intern.ka_id }, SECRET_KEY, { expiresIn: '1h' });
-        res.status(200).json({ msg: 'Login successful', token });
+        res.status(200).json({ msg: 'Login successful', token,data : intern });
     } catch (err) {
         res.status(500).json({ msg: 'Server error', error: err.message });
     }

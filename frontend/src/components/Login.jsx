@@ -1,21 +1,27 @@
 import React, { useState } from 'react';
 import { User, Lock, AlertCircle } from 'lucide-react';
 import axios from 'axios';
+import { useEffect } from "react";
+import { useUser } from '../contexts/UserContext';
+import {login} from '../services/api'
 
 export default function Login({ setToken }) {
     const [ka_id, setKaId] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-
+    const { setUser } = useUser();
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setIsLoading(true);
 
         try {
-            const res = await axios.post('http://localhost:3000/auth/login', { ka_id, password });
+            const res = await login(ka_id, password);
             setToken(res.data.token);
+            console.log(res.data.data);
+            setUser(res.data.data);
+            localStorage.setItem('user', JSON.stringify(res.data.data));
         } catch (err) {
             setError(err.response?.data?.msg || 'Login failed');
         } finally {
@@ -23,6 +29,30 @@ export default function Login({ setToken }) {
         }
     };
 
+
+
+    function useTypewriter(text, speed = 50) {
+        const [displayedText, setDisplayedText] = useState("");
+
+        useEffect(() => {
+            let currentIndex = 0;
+
+            const interval = setInterval(() => {
+                if (currentIndex < text.length) {
+                    setDisplayedText((prev) => prev + text.charAt(currentIndex));
+                    currentIndex++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, speed);
+
+            return () => clearInterval(interval);
+        }, [text, speed]);
+
+        return displayedText;
+    }
+
+    const typedText = useTypewriter("Trailblazers of Digital Transformation", 60);
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
             <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -38,7 +68,7 @@ export default function Login({ setToken }) {
 
                     {/* Bigger Tagline */}
                     <p className="text-xl text-gray-700 font-bold tracking-wide mb-4">
-                        Trailblazers of Digital Transformation
+                        {typedText}
                     </p>
 
                     {/* Bigger Description */}

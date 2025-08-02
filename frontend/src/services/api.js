@@ -7,5 +7,5 @@ export const login = (ka_id, password) =>
 
 export const getAllInterns = (token) =>
   axios.get(`${API_URL}/leaderboard/all`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
+    headers: { Authorization: `Bearer ${token}`}
+});
