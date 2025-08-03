@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const scoreSchema = new mongoose.Schema({
   moduleNumber: {
-    type: String,  
+    type: String,
     required: true
   },
   moduleName: {
@@ -28,6 +28,10 @@ const internSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
+  },
+  profilePic: {
+    type: String,        
+    default: ''          
   },
   score: {
     type: [scoreSchema],

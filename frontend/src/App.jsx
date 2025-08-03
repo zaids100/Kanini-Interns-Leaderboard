@@ -4,6 +4,7 @@ import Login from './components/Login';
 import Leaderboard from './components/Leaderboard';
 import Header from './components/Header';
 import Profile from './components/Profile'; 
+import ProfileCard from './components/ProfileCard';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token') || '');
@@ -30,6 +31,7 @@ function App() {
           {/* Protect leaderboard and profile routes */}
           <Route path="/leaderboard" element={token ? <Leaderboard token={token} /> : <Navigate to="/" />} />
           <Route path="/profile" element={token ? <Profile /> : <Navigate to="/" />} />
+          <Route path="/profile-card/:ka_id" element={<ProfileCard />} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" />} />

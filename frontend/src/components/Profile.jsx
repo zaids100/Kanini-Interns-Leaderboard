@@ -1,9 +1,9 @@
 import React from 'react';
 import { useUser } from '../contexts/UserContext';
 import { User, Mail, Award, Code, TrendingUp, Star, Trophy, Target } from 'lucide-react';
-
+import { uploadProfilePic } from '../services/api'
 export default function Profile() {
-    const { user } = useUser();
+    const { user, setUser } = useUser();
 
     if (!user) {
         return (
@@ -35,15 +35,48 @@ export default function Profile() {
 
     const roundedAvg = Math.round(averageScore * 100) / 100;
 
+    const handleFileChange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await uploadProfilePic(file, token);
+                console.log("Upload successful:", response.data);
 
+                if (response.data?.imageUrl) {
+                    setUser(prev => ({ ...prev, profilePic: response.data.imageUrl }));
+                }
+            } catch (error) {
+                console.error("Upload failed:", error);
+            }
+        }
+    };
     return (
-        <div className="min-h-screen bg-white text-gray-900 py-8 px-4">
+        <div className="min-h-screen bg-white text-gray-900 py-8 px-4 ">
             <div className="max-w-6xl mx-auto">
                 <div className="bg-gray-100 rounded-3xl shadow-lg border border-gray-300 p-8 mb-8">
                     <div className="flex items-center space-x-6">
                         <div className="relative">
-                            <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center">
-                                <User size={40} className="text-gray-800" />
+                            <div className="relative group cursor-pointer">
+                                <label htmlFor="profile-pic-upload">
+                                    <div className="w-24 h-24 bg-gray-200 rounded-full overflow-hidden flex items-center justify-center hover:opacity-80 transition">
+                                        <img
+                                            src={user.profilePic || "https://i.pravatar.cc/150?img=11"} // Fallback image
+                                            alt="Profile"
+                                            className="w-full h-full object-cover cursor-pointer"
+                                        />
+                                    </div>
+                                </label>
+                                <input
+                                    type="file"
+                                    id="profile-pic-upload"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={handleFileChange}
+                                />
+                                {/* <div className="absolute -bottom-2 -right-2 bg-green-500 rounded-full w-8 h-8 flex items-center justify-center">
+                                    <Star size={16} className="text-white" />
+                                </div> */}
                             </div>
                             <div className="absolute -bottom-2 -right-2 bg-green-500 rounded-full w-8 h-8 flex items-center justify-center">
                                 <Star size={16} className="text-white" />

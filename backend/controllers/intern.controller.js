@@ -22,7 +22,34 @@ const getInternById = async (req, res) => {
     }
 };
 
+const uploadProfilePic = async (req, res) => {
+    try {
+        if (!req.file || !req.file.path) {
+            return res.status(400).json({ error: 'No file uploaded' });
+        }
+
+        const imageUrl = req.file.path;
+        console.log(imageUrl);
+        const updatedIntern = await Intern.findOneAndUpdate(
+            { ka_id: req.user.ka_id },
+            { profilePic: imageUrl },
+            { new: true }
+        );
+
+        res.status(200).json({
+            message: 'Profile picture uploaded successfully',
+            imageUrl: imageUrl,
+            intern: updatedIntern,
+        });
+
+    } catch (error) {
+        console.error('Upload error:', error);
+        res.status(500).json({ error: 'Upload failed' });
+    }
+}
+
 module.exports = {
     getAllInternsData,
     getInternById,
+    uploadProfilePic
 };
