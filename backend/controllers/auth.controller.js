@@ -1,7 +1,8 @@
 const Intern = require('../models/intern.model');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
+const SECRET_KEY = process.env.JWT_SECRET_KEY || 'your_secret_key'
 
-const SECRET_KEY = 'your_secret_key'; // Use env variable in production
 
 const login = async (req, res) => {
     const { ka_id, password } = req.body;
@@ -16,7 +17,7 @@ const login = async (req, res) => {
         if (intern.password !== password) {
             return res.status(401).json({ msg: 'Invalid password' });
         }
-        // Create JWT token
+      
         const token = jwt.sign({ ka_id: intern.ka_id }, SECRET_KEY, { expiresIn: '1h' });
         res.status(200).json({ msg: 'Login successful', token,data : intern });
     } catch (err) {

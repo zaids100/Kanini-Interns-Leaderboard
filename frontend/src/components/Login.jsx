@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { User, Lock, AlertCircle } from 'lucide-react';
-import axios from 'axios';
+// import axios from 'axios';
 import { useEffect } from "react";
 import { useUser } from '../contexts/UserContext';
 import {login} from '../services/api'

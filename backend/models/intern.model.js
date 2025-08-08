@@ -40,6 +40,11 @@ const internSchema = new mongoose.Schema({
   achievements: {
     type: [String],
     default: []
+  },
+  role: {
+    type: String,
+    enum: ['intern', 'admin'], 
+    default: 'intern'
   }
 });
 

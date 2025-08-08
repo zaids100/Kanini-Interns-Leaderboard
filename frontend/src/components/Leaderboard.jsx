@@ -131,8 +131,8 @@ export default function Leaderboard({ token }) {
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
             {/* Header */}
-            <div className="bg-white border-b border-gray-200 shadow-sm">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-white border-b border-gray-200 shadow-sm fixed top-0 left-0 w-full z-30">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
                     <div className="flex justify-between items-center py-6">
                         <div className="flex items-center space-x-3">
                             <div className="flex items-center">
@@ -176,7 +176,7 @@ export default function Leaderboard({ token }) {
             </div>
 
             {/* Content */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-32">
                 {sortedInterns.length === 0 ? (
                     <div className="text-center py-12">
                         <User className="w-16 h-16 text-gray-300 mx-auto mb-4" />

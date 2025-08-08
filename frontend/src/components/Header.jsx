@@ -19,7 +19,7 @@ const Header = () => {
           <div className="cursor-pointer">Who We Are ▼</div>
           <div className="cursor-pointer">Industries We’re Into ▼</div>
           <div className="cursor-pointer">Join Us ▼</div>
-          <div className="cursor-pointer">Our Insights ▼</div>
+          <div className="cursor-pointer">Our Insights▼</div>
         </nav>
         <button className="bg-[#0A0A23] text-white text-sm font-bold py-2 px-5 rounded-md hover:bg-[#1a1a40] transition-all">
           Talk to Us
