@@ -14,7 +14,7 @@ const Header = () => {
 
       {/* Navigation + CTA */}
       <div className="flex items-center gap-6">
-        <nav className="hidden md:flex gap-6 text-sm font-medium text-gray-800">
+        <nav className="hidden md:flex gap-6 text-md font-medium text-gray-600">
           <div className="cursor-pointer">What We Do ▼</div>
           <div className="cursor-pointer">Who We Are ▼</div>
           <div className="cursor-pointer">Industries We’re Into ▼</div>

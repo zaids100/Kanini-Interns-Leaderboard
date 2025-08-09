@@ -49,15 +49,23 @@ const login = async (req, res) => {
 
 const addModuleAndScoreByInternIdAndModuleId = async (req, res) => {
     try {
-        console.log(req.params);
         const { moduleNumber, moduleName, score } = req.body;
-        
-        const intern = await Intern.findOne({ ka_id: req.params.ka_id });
+        const { ka_id } = req.params;
+
+        const intern = await Intern.findOne({ ka_id });
         if (!intern) {
             return res.status(404).json({ msg: 'Intern not found' });
         }
 
-        intern.score.push({ moduleNumber, moduleName, score });
+        // Check if module already exists
+        const existingModule = intern.score.find(
+            m => String(m.moduleNumber) === String(moduleNumber)
+        );
+        if (existingModule) {
+            return res.status(400).json({ msg: 'Module already exists. Use update endpoint.' });
+        }
+
+        intern.score.push({ moduleNumber: String(moduleNumber), moduleName, score });
         await intern.save();
 
         res.json({ msg: 'Module added successfully', intern });
@@ -66,17 +74,20 @@ const addModuleAndScoreByInternIdAndModuleId = async (req, res) => {
     }
 };
 
+// Update score
 const updateScoreByInternIdAndModuleId = async (req, res) => {
     try {
         const { score } = req.body;
-        const { ka_id,moduleNumber} = req.params;
-        const intern = await Intern.findOne({ ka_id });
+        const { ka_id, moduleNumber } = req.params;
 
+        const intern = await Intern.findOne({ ka_id });
         if (!intern) {
             return res.status(404).json({ msg: 'Intern not found' });
         }
 
-        const module = intern.score.find(m => m.moduleNumber === moduleNumber);
+        const module = intern.score.find(
+            m => String(m.moduleNumber) === String(moduleNumber)
+        );
         if (!module) {
             return res.status(404).json({ msg: 'Module not found' });
         }
