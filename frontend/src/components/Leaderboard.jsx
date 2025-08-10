@@ -106,7 +106,7 @@ export default function Leaderboard() {
     };
 
     const handleProfileClick = () => {
-        window.location.href = "/profile";
+        navigate("/profile");
     };
 
     const getTotalScore = (scores) => {
