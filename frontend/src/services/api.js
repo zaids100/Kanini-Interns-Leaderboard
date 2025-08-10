@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://kanini-interns-leaderboard.onrender.com';
+const API_URL = 'https://kanini-interns-leaderboard.onrender.com/api';
 
 // Add request interceptor for debugging
 axios.interceptors.request.use(
