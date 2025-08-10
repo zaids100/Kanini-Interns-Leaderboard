@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://kanini-interns-leaderboard-ol9u.vercel.app';
 
 // Add request interceptor for debugging
 axios.interceptors.request.use(

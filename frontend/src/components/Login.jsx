@@ -87,8 +87,8 @@ export default function Login() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex flex-col items-center justify-center p-4">
+      <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center flex-grow">
         {/* Left side - branding */}
         <div className="flex flex-col items-center md:items-start text-center md:text-left">
           <img
@@ -197,6 +197,11 @@ export default function Login() {
           </div>
         </div>
       </div>
+
+      {/* Copyright message */}
+      <footer className="mt-8 text-center text-gray-500 text-sm select-none">
+        &copy; {new Date().getFullYear()} Made by Zaid Shaikh
+      </footer>
     </div>
   );
 }

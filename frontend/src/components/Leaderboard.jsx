@@ -18,30 +18,30 @@ export default function Leaderboard() {
     const navigate = useNavigate();
 
     // Debug logging for token state
-    console.log('Leaderboard - Component rendered with token:', token ? 'Present' : 'Missing');
-    console.log('Leaderboard - Token details:', token ? { length: token.length, start: token.substring(0, 20) + '...' } : 'No token');
+    // console.log('Leaderboard - Component rendered with token:', token ? 'Present' : 'Missing');
+    // console.log('Leaderboard - Token details:', token ? { length: token.length, start: token.substring(0, 20) + '...' } : 'No token');
     
     // Debug function to check token state
-    const debugTokenState = () => {
-        console.log('=== DEBUG TOKEN STATE ===');
-        console.log('Context token:', token ? 'Present' : 'Missing');
-        console.log('localStorage token:', localStorage.getItem('token') ? 'Present' : 'Missing');
-        console.log('Context user:', user ? 'Present' : 'Missing');
-        console.log('localStorage user:', localStorage.getItem('user') ? 'Present' : 'Missing');
+    // const debugTokenState = () => {
+    //     console.log('=== DEBUG TOKEN STATE ===');
+    //     console.log('Context token:', token ? 'Present' : 'Missing');
+    //     console.log('localStorage token:', localStorage.getItem('token') ? 'Present' : 'Missing');
+    //     console.log('Context user:', user ? 'Present' : 'Missing');
+    //     console.log('localStorage user:', localStorage.getItem('user') ? 'Present' : 'Missing');
         
-        // Test API call with current token
-        if (token) {
-            console.log('Testing API call with current token...');
-            getAllInterns(token)
-                .then(res => {
-                    console.log('✅ API call successful:', res.data);
-                })
-                .catch(err => {
-                    console.error('❌ API call failed:', err.response?.status, err.response?.data);
-                });
-        }
-        console.log('=======================');
-    };
+    //     // Test API call with current token
+    //     if (token) {
+    //         console.log('Testing API call with current token...');
+    //         getAllInterns(token)
+    //             .then(res => {
+    //                 console.log('✅ API call successful:', res.data);
+    //             })
+    //             .catch(err => {
+    //                 console.error('❌ API call failed:', err.response?.status, err.response?.data);
+    //             });
+    //     }
+    //     console.log('=======================');
+    // };
 
     // Log initial token state once
     useEffect(() => {
@@ -206,7 +206,7 @@ export default function Leaderboard() {
                 user={user}
                 onLogout={handleLogout}
                 onProfileClick={handleProfileClick}
-                onDebugClick={debugTokenState}
+                // onDebugClick={debugTokenState}
             />
 
             {/* Content */}
