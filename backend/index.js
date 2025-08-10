@@ -10,12 +10,18 @@ const adminRoutes = require('./routes/admin.route');
 
 // const authenticateJWT = require('./middlewares/auth.middleware');
 
-app.use(cors());
+const corsOptions = {
+  origin: process.env.ALLOWED_ORIGIN,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-    res.status(200).json({ msg: 'Hello World!' });
+    res.status(200).json({ msg: 'Hello From Server!' });
 });
 
 
