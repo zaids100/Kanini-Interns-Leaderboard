@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://kanini-interns-leaderboard-ol9u.vercel.app/admin",
+  baseURL: "http://localhost:3000/admin",
 });
 
 // Attach token automatically for protected routes

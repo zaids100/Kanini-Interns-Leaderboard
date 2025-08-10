@@ -200,7 +200,7 @@ export default function Login() {
 
       {/* Copyright message */}
       <footer className="mt-8 text-center text-gray-500 text-sm select-none">
-        &copy; {new Date().getFullYear()} Made by Zaid Shaikh
+        &copy; {new Date().getFullYear()} KANINI Software Solutions | All Rights Reserved | <a className="text-blue-600" href="https://kanini.com/privacy-policy/">Privacy Policy</a>
       </footer>
     </div>
   );

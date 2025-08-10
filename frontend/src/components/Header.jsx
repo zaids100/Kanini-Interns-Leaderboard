@@ -8,7 +8,8 @@ const Header = () => {
         <img
           src="https://kanini.com/wp-content/uploads/2022/06/Kanini-Logo.svg"
           alt="Kanini Logo"
-          className="w-32 h-auto object-contain"
+          className="w-32 h-auto object-contain cursor-pointer"
+          onClick={() => window.location.href = "/"}
         />
       </div>
 
