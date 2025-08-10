@@ -15,14 +15,14 @@ const Header = () => {
 
       {/* Navigation + CTA */}
       <div className="flex items-center gap-6">
-        <nav className="hidden md:flex gap-6 text-md font-medium text-gray-600">
+        {/* <nav className="hidden md:flex gap-6 text-md font-medium text-gray-600">
           <div className="cursor-pointer">What We Do ▼</div>
           <div className="cursor-pointer">Who We Are ▼</div>
           <div className="cursor-pointer">Industries We’re Into ▼</div>
           <div className="cursor-pointer">Join Us ▼</div>
           <div className="cursor-pointer">Our Insights▼</div>
-        </nav>
-        <button className="bg-[#0A0A23] text-white text-sm font-bold py-2 px-5 rounded-md hover:bg-[#1a1a40] transition-all">
+        </nav> */}
+        <button onClick={() => window.location.href = "https://kanini.com/contact-us/"} className="bg-[#0A0A23] text-white text-sm font-bold py-2 px-5 rounded-md hover:bg-[#1a1a40] transition-all cursor-pointer">
           Talk to Us
         </button>
       </div>

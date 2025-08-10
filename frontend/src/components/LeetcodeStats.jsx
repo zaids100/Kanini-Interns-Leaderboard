@@ -32,3 +32,4 @@ export default function LeetcodeStats({ user }) {
         </div>
     );
 }
+
