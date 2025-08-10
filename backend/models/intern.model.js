@@ -15,6 +15,32 @@ const scoreSchema = new mongoose.Schema({
   }
 }, { _id: false });
 
+const certificationSchema = new mongoose.Schema({
+  certification_name: {
+    type: String,
+    required: true
+  },
+  certificate_link: {
+    type: String,
+    required: true
+  }
+}, { _id: false });
+
+const leetcodeStatsSchema = new mongoose.Schema({
+  easy: {
+    type: Number,
+    default: 0
+  },
+  medium: {
+    type: Number,
+    default: 0
+  },
+  hard: {
+    type: Number,
+    default: 0
+  }
+}, { _id: false });
+
 const internSchema = new mongoose.Schema({
   ka_id: {
     type: String,
@@ -37,9 +63,13 @@ const internSchema = new mongoose.Schema({
     type: [scoreSchema],
     default: []
   },
-  achievements: {
-    type: [String],
+  certifications: {
+    type: [certificationSchema],
     default: []
+  },
+  leetcode_stats: {
+    type: leetcodeStatsSchema,
+    default: { easy: 0, medium: 0, hard: 0 }
   },
   role: {
     type: String,

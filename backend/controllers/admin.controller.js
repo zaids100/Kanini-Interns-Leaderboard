@@ -101,4 +101,102 @@ const updateScoreByInternIdAndModuleId = async (req, res) => {
     }
 };
 
-module.exports = { login,addModuleAndScoreByInternIdAndModuleId,updateScoreByInternIdAndModuleId };
+// Add certification to intern
+const addCertificationToIntern = async (req, res) => {
+    try {
+        const { certification_name, certificate_link } = req.body;
+        const { ka_id } = req.params;
+
+        if (!certification_name || !certificate_link) {
+            return res.status(400).json({ msg: 'certification_name and certificate_link are required' });
+        }
+
+        const intern = await Intern.findOne({ ka_id });
+        if (!intern) {
+            return res.status(404).json({ msg: 'Intern not found' });
+        }
+
+        // Check if certification already exists
+        const existingCert = intern.certifications.find(
+            cert => cert.certification_name === certification_name
+        );
+        if (existingCert) {
+            return res.status(400).json({ msg: 'Certification already exists. Use update endpoint.' });
+        }
+
+        intern.certifications.push({ certification_name, certificate_link });
+        await intern.save();
+
+        res.json({ msg: 'Certification added successfully', intern });
+    } catch (err) {
+        res.status(500).json({ msg: 'Server error', error: err.message });
+    }
+};
+
+// Update certification for intern
+const updateCertificationForIntern = async (req, res) => {
+    try {
+        const { certificate_link } = req.body;
+        const { ka_id, certification_name } = req.params;
+
+        if (!certificate_link) {
+            return res.status(400).json({ msg: 'certificate_link is required' });
+        }
+
+        const intern = await Intern.findOne({ ka_id });
+        if (!intern) {
+            return res.status(404).json({ msg: 'Intern not found' });
+        }
+
+        const certification = intern.certifications.find(
+            cert => cert.certification_name === certification_name
+        );
+        if (!certification) {
+            return res.status(404).json({ msg: 'Certification not found' });
+        }
+
+        certification.certificate_link = certificate_link;
+        await intern.save();
+
+        res.json({ msg: 'Certification updated successfully', intern });
+    } catch (err) {
+        res.status(500).json({ msg: 'Server error', error: err.message });
+    }
+};
+
+// Update leetcode stats for intern
+const updateLeetcodeStatsForIntern = async (req, res) => {
+    try {
+        const { easy, medium, hard } = req.body;
+        const { ka_id } = req.params;
+
+        if (easy === undefined && medium === undefined && hard === undefined) {
+            return res.status(400).json({ msg: 'At least one leetcode stat field is required' });
+        }
+
+        const intern = await Intern.findOne({ ka_id });
+        if (!intern) {
+            return res.status(404).json({ msg: 'Intern not found' });
+        }
+
+        // Update only provided fields
+        if (easy !== undefined) intern.leetcode_stats.easy = easy;
+        if (medium !== undefined) intern.leetcode_stats.medium = medium;
+        if (hard !== undefined) intern.leetcode_stats.hard = hard;
+
+        await intern.save();
+
+        res.json({ msg: 'Leetcode stats updated successfully', intern });
+    } catch (err) {
+        res.status(500).json({ msg: 'Server error', error: err.message });
+    }
+};
+
+module.exports = { 
+    login,
+    addModuleAndScoreByInternIdAndModuleId,
+    updateScoreByInternIdAndModuleId,
+    addCertificationToIntern,
+    updateCertificationForIntern,
+    updateLeetcodeStatsForIntern
+};

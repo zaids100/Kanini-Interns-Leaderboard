@@ -4,23 +4,28 @@ import { useNavigate, Link } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
 import { login } from "../services/api";
 
-export default function Login({ setToken }) {
+export default function Login() {
   const [ka_id, setKaId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const { setUser } = useUser();
+  const { setUser, setToken } = useUser();
   const navigate = useNavigate();
 
   // Redirect if already logged in
   useEffect(() => {
+    console.log('Login component - useEffect triggered');
     const savedToken = localStorage.getItem("token");
     const savedUser = localStorage.getItem("user");
+    console.log('Login component - Saved token:', savedToken ? 'Present' : 'Missing');
+    console.log('Login component - Saved user:', savedUser ? 'Present' : 'Missing');
 
     if (savedToken && savedUser) {
+      console.log('Login component - Setting saved token and user');
       setToken(savedToken);
       setUser(JSON.parse(savedUser));
+      console.log('Login component - Navigating to leaderboard');
       navigate("/leaderboard");
     }
   }, [setToken, setUser, navigate]);
@@ -31,16 +36,21 @@ export default function Login({ setToken }) {
     setIsLoading(true);
 
     try {
+      console.log('Login attempt for:', ka_id);
       const res = await login(ka_id, password);
+      console.log('Login response received:', res.data);
 
       // Save token + user data
+      console.log('Setting token and user in context');
       setToken(res.data.token);
       setUser(res.data.data);
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.data));
 
+      console.log('Token and user set, navigating to leaderboard');
       navigate("/leaderboard");
     } catch (err) {
+      console.error('Login error:', err);
       const message =
         err.response?.data?.msg ||
         err.message ||

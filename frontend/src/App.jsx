@@ -8,19 +8,15 @@ import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import Header from './components/Header';
 import { useAdmin } from "./contexts/AdminContext";
+import { UserProvider, useUser } from "./contexts/UserContext";
 
-function App() {
-  const [token, setToken] = useState(localStorage.getItem('token') || '');
+function AppRoutes() {
+  const { token } = useUser();
   const { adminToken } = useAdmin();
 
-  const handleSetToken = (tok) => {
-    setToken(tok);
-    localStorage.setItem('token', tok);
-  };
-
-  useEffect(() => {
-    setToken(localStorage.getItem('token') || '');
-  }, []);
+  // Debug logging
+  console.log('AppRoutes - Current token:', token ? 'Present' : 'Missing');
+  console.log('AppRoutes - Current adminToken:', adminToken ? 'Present' : 'Missing');
 
   return (
     <Router>
@@ -30,10 +26,10 @@ function App() {
       <main className="">
         <Routes>
           {/* User Login */}
-          <Route path="/" element={!token ? <Login setToken={handleSetToken} /> : <Navigate to="/leaderboard" />} />
+          <Route path="/" element={!token ? <Login /> : <Navigate to="/leaderboard" />} />
           
           {/* User Pages */}
-          <Route path="/leaderboard" element={token ? <Leaderboard token={token} /> : <Navigate to="/" />} />
+          <Route path="/leaderboard" element={token ? <Leaderboard /> : <Navigate to="/" />} />
           <Route path="/profile" element={token ? <Profile /> : <Navigate to="/" />} />
           <Route path="/profile-card/:ka_id" element={<ProfileCard />} />
 
@@ -46,6 +42,14 @@ function App() {
         </Routes>
       </main>
     </Router>
+  );
+}
+
+function App() {
+  return (
+    <UserProvider>
+      <AppRoutes />
+    </UserProvider>
   );
 }
 

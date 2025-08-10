@@ -1,28 +1,56 @@
 import React, { useEffect, useState } from 'react';
-import { User, Award, Trophy, Star, Mail, Car as IdCard } from 'lucide-react';
+import { User, Award, Trophy, Star, Mail, Car as IdCard, Code } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import { getInternById } from '../services/api'; // Adjust the import based on your file structure
+import { useUser } from '../contexts/UserContext';
 
 export default function ProfileCard() {
     const { ka_id } = useParams();
+    const { token, setToken, setUser } = useUser();
     const [intern, setIntern] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
+    // Debug logging
+    console.log('ProfileCard component - token:', token ? 'Present' : 'Missing');
+
     useEffect(() => {
         const fetchIntern = async () => {
-            const token = localStorage.getItem('token');
             if (!token) return;
             try {
                 const res = await getInternById(ka_id, token);
                 setIntern(res.data.intern);
             } catch (error) {
+                console.error('Error fetching intern:', error);
+                if (error.response?.status === 401) {
+                    console.error('Authentication failed - token might be invalid');
+                    // Clear invalid token
+                    setToken(null);
+                    setUser(null);
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                }
                 setIntern(null);
             } finally {
                 setIsLoading(false);
             }
         };
-        fetchIntern();
-    }, [ka_id]);
+        
+        if (token) {
+            fetchIntern();
+        } else {
+            setIsLoading(false);
+        }
+    }, [ka_id, token, setToken, setUser]);
+
+    if (!token) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <p className="text-red-600">Authentication token missing. Please log in again.</p>
+                </div>
+            </div>
+        );
+    }
 
     if (isLoading) {
         return (
@@ -42,7 +70,7 @@ export default function ProfileCard() {
     }
 
     // Destructure intern data
-    const { name, ka_id: internKaId, score = [], achievements = [], profilePic = '', _id: id } = intern;
+    const { name, ka_id: internKaId, score = [], certifications = [], leetcode_stats = { easy: 0, medium: 0, hard: 0 }, profilePic = '', _id: id } = intern;
 
     const getTotalScore = () => {
         return score.reduce((total, module) => total + module.score, 0);
@@ -126,6 +154,35 @@ export default function ProfileCard() {
                     )}
                 </div>
 
+                {/* Leetcode Stats */}
+                <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                        <Code className="w-5 h-5 text-orange-500 mr-2" />
+                        Leetcode Stats
+                    </h3>
+                    
+                    <div className="grid grid-cols-3 gap-3">
+                        <div className="bg-green-50 rounded-lg p-3 text-center">
+                            <div className="text-lg font-bold text-green-600">{leetcode_stats.easy || 0}</div>
+                            <div className="text-xs text-green-500">Easy</div>
+                        </div>
+                        <div className="bg-yellow-50 rounded-lg p-3 text-center">
+                            <div className="text-lg font-bold text-yellow-600">{leetcode_stats.medium || 0}</div>
+                            <div className="text-xs text-yellow-500">Medium</div>
+                        </div>
+                        <div className="bg-red-50 rounded-lg p-3 text-center">
+                            <div className="text-lg font-bold text-red-600">{leetcode_stats.hard || 0}</div>
+                            <div className="text-xs text-red-500">Hard</div>
+                        </div>
+                    </div>
+                    
+                    <div className="mt-3 text-center">
+                        <div className="text-sm text-gray-600">
+                            Total: <span className="font-semibold">{(leetcode_stats.easy || 0) + (leetcode_stats.medium || 0) + (leetcode_stats.hard || 0)}</span> problems solved
+                        </div>
+                    </div>
+                </div>
+
                 {/* Module Scores */}
                 <div className="mb-6">
                     <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
@@ -170,29 +227,32 @@ export default function ProfileCard() {
                     )}
                 </div>
 
-                {/* Achievements */}
+                {/* Certifications */}
                 <div className="mb-6">
                     <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
                         <Award className="w-5 h-5 text-green-500 mr-2" />
-                        Achievements
+                        Certifications
                     </h3>
                     
-                    {achievements.length > 0 ? (
-                        <div className="flex flex-wrap gap-2">
-                            {achievements.map((achievement, index) => (
-                                <span
+                    {certifications && certifications.length > 0 ? (
+                        <div className="space-y-2">
+                            {certifications.map((cert, index) => (
+                                <a
                                     key={index}
-                                    className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-green-100 text-green-800 border border-green-200"
+                                    href={cert.certificate_link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-green-100 text-green-800 border border-green-200 hover:bg-green-200 transition-colors cursor-pointer"
                                 >
                                     <Award className="w-3 h-3 mr-1" />
-                                    {achievement}
-                                </span>
+                                    {cert.certification_name}
+                                </a>
                             ))}
                         </div>
                     ) : (
                         <div className="text-center py-4 text-gray-500">
                             <Award className="w-8 h-8 mx-auto mb-2 text-gray-300" />
-                            <p>No achievements yet</p>
+                            <p>No certifications yet</p>
                         </div>
                     )}
                 </div>

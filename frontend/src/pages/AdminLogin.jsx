@@ -45,17 +45,26 @@ export default function AdminLogin() {
         {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <label htmlFor="admin_id" className="block text-sm font-medium text-gray-700">
+            Admin ID
+          </label>
           <input
             type="text"
+            id="admin_id"
             name="admin_id"
             value={formData.admin_id}
             onChange={handleChange}
-            placeholder="AD01"
+            placeholder="ADM01,ADM02,ADM03"
             required
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg"
           />
+
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            Password
+          </label>
           <input
             type="password"
+            id="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
@@ -63,6 +72,7 @@ export default function AdminLogin() {
             required
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg"
           />
+
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg shadow hover:bg-blue-700"
