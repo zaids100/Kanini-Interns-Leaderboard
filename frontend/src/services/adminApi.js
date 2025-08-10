@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://kanini-interns-leaderboard.onrender.com",
+  baseURL: "https://kanini-interns-leaderboard.onrender.com/admin",
 });
 
 // Attach token automatically for protected routes
