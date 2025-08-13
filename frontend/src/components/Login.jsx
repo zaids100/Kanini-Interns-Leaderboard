@@ -82,7 +82,7 @@ export default function Login() {
   }
 
   const typedText = useTypewriter(
-    "Trailblazers of Digital Transformations",
+    "Creating sustainable solutions for your digital transformation",
     60
   );
 
