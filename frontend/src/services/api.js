@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const API_URL = 'https://kanini-interns-leaderboard.onrender.com/api';
+// const API_URL = 'http://localhost:3000/api';
 
 // Add request interceptor for debugging
 axios.interceptors.request.use(
@@ -33,15 +34,15 @@ axios.interceptors.response.use(
   }
 );
 
-export const login = (ka_id, password) =>
-  axios.post(`${API_URL}/auth/login`, { ka_id, password });
+export const login = (ka_id, password, batch) =>
+  axios.post(`${API_URL}/auth/login`, { ka_id, password, batch });
 
-export const getAllInterns = (token) => {
+export const getAllInterns = (token,batch) => {
   console.log('getAllInterns called with token:', token ? 'Present' : 'Missing');
   console.log('getAllInterns token details:', token ? { length: token.length, start: token.substring(0, 20) + '...' } : 'No token');
   console.log('getAllInterns Authorization header:', `Bearer ${token}`);
   
-  return axios.get(`${API_URL}/leaderboard/all`, {
+  return axios.get(`${API_URL}/leaderboard/all?batch=${batch}`, {
     headers: { Authorization: `Bearer ${token}` }
   });
 };

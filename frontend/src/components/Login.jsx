@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { User, Lock, AlertCircle } from "lucide-react";
+import { User, Lock, AlertCircle, Layers } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
 import { login } from "../services/api";
@@ -7,6 +7,7 @@ import { login } from "../services/api";
 export default function Login() {
   const [ka_id, setKaId] = useState("");
   const [password, setPassword] = useState("");
+  const [batch, setBatch] = useState("1"); // ✅ batch state
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -15,17 +16,12 @@ export default function Login() {
 
   // Redirect if already logged in
   useEffect(() => {
-    console.log('Login component - useEffect triggered');
     const savedToken = localStorage.getItem("token");
     const savedUser = localStorage.getItem("user");
-    console.log('Login component - Saved token:', savedToken ? 'Present' : 'Missing');
-    console.log('Login component - Saved user:', savedUser ? 'Present' : 'Missing');
 
     if (savedToken && savedUser) {
-      console.log('Login component - Setting saved token and user');
       setToken(savedToken);
       setUser(JSON.parse(savedUser));
-      console.log('Login component - Navigating to leaderboard');
       navigate("/leaderboard");
     }
   }, [setToken, setUser, navigate]);
@@ -36,21 +32,21 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      console.log('Login attempt for:', ka_id);
-      const res = await login(ka_id, password);
-      console.log('Login response received:', res.data);
+      console.log("Login attempt for:", ka_id, "Batch:", batch);
+
+      // ✅ Pass batch along with ka_id & password
+      const res = await login(ka_id, password, Number(batch));
 
       // Save token + user data
-      console.log('Setting token and user in context');
       setToken(res.data.token);
       setUser(res.data.data);
+      console.log(res.data.data);
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.data));
 
-      console.log('Token and user set, navigating to leaderboard');
       navigate("/leaderboard");
     } catch (err) {
-      console.error('Login error:', err);
+      console.error("Login error:", err);
       const message =
         err.response?.data?.msg ||
         err.message ||
@@ -60,31 +56,6 @@ export default function Login() {
       setIsLoading(false);
     }
   };
-
-  // Small text typewriter effect
-  function useTypewriter(text, speed = 50) {
-    const [displayedText, setDisplayedText] = useState("");
-
-    useEffect(() => {
-      let currentIndex = 0;
-      const interval = setInterval(() => {
-        if (currentIndex < text.length) {
-          setDisplayedText((prev) => prev + text.charAt(currentIndex));
-          currentIndex++;
-        } else {
-          clearInterval(interval);
-        }
-      }, speed);
-      return () => clearInterval(interval);
-    }, [text, speed]);
-
-    return displayedText;
-  }
-
-  const typedText = useTypewriter(
-    "Trailblazers of Digital Transformations",
-    60
-  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex flex-col items-center justify-center p-2 sm:p-4 pt-4">
@@ -97,7 +68,7 @@ export default function Login() {
             className="w-[200px] sm:w-[240px] lg:w-[280px] mb-4 sm:mb-6"
           />
           <p className="text-lg sm:text-xl text-gray-700 font-bold tracking-wide mb-3 sm:mb-4 px-2">
-            {typedText}
+            Trailblazers of Digital Transformations
           </p>
           <p className="text-base sm:text-lg text-gray-600 max-w-xl leading-relaxed px-4 sm:px-0">
             Welcome to Kanini's Interns Leaderboard — a smart platform that
@@ -153,6 +124,28 @@ export default function Login() {
               </div>
             </div>
 
+            {/* Batch Select */}
+            <div>
+              <label
+                htmlFor="batch"
+                className="block text-sm font-semibold text-gray-700 mb-2"
+              >
+                Batch
+              </label>
+              <div className="relative">
+                <Layers className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+                <select
+                  id="batch"
+                  value={batch}
+                  onChange={(e) => setBatch(e.target.value)}
+                  className="w-full pl-9 sm:pl-10 pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-gray-50 focus:bg-white text-sm sm:text-base appearance-none"
+                >
+                  <option value="1">Batch 1</option>
+                  <option value="2">Batch 2</option>
+                </select>
+              </div>
+            </div>
+
             {/* Error */}
             {error && (
               <div className="flex items-center space-x-2 p-3 bg-red-50 border border-red-200 rounded-lg">
@@ -198,9 +191,12 @@ export default function Login() {
         </div>
       </div>
 
-      {/* Copyright message */}
+      {/* Copyright */}
       <footer className="mt-6 sm:mt-8 text-center text-gray-500 text-xs sm:text-sm select-none px-4">
-        &copy; {new Date().getFullYear()} KANINI Software Solutions | All Rights Reserved | <a className="text-blue-600" href="https://kanini.com/privacy-policy/">Privacy Policy</a>
+        &copy; {new Date().getFullYear()} KANINI Software Solutions | All Rights Reserved |{" "}
+        <a className="text-blue-600" href="https://kanini.com/privacy-policy/">
+          Privacy Policy
+        </a>
       </footer>
     </div>
   );

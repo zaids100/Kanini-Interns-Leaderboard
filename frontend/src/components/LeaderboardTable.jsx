@@ -7,12 +7,10 @@ export default function LeaderboardTable({
   getTotalScore, 
   getMaxScore 
 }) {
-  // Hide the last column when sorting by a specific module
   const showScoreColumn = sortBy === 'overall';
 
   return (
     <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-      {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead className="bg-gray-50 border-b border-gray-200">
@@ -28,6 +26,9 @@ export default function LeaderboardTable({
               </th>
               <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Module Scores
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                Communication
               </th>
               {showScoreColumn && (
                 <th className="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">

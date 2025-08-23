@@ -2,6 +2,7 @@ import AddModuleAccordion from "./AddModuleAccordion";
 import UpdateModuleScore from "./UpdateModuleScore";
 import AddCertification from "./AddCertification";
 import UpdateLeetcodeStats from "./UpdateLeetcodeStats";
+import UpdateCommunicationScore from "./UpdateCommunicationScore";
 
 export default function AdminForms({
   selectedKaId,
@@ -29,6 +30,9 @@ export default function AdminForms({
   hardCount,
   setHardCount,
   handleUpdateLeetcodeStats,
+  communicationScore,
+  setCommunicationScore,
+  handleUpdateCommunicationScore
 }) {
   return (
     <div className="grid md:grid-cols-2 gap-8">
@@ -67,6 +71,12 @@ export default function AdminForms({
         hardCount={hardCount}
         setHardCount={setHardCount}
         handleUpdateLeetcodeStats={handleUpdateLeetcodeStats}
+      />
+      <UpdateCommunicationScore
+        selectedKaId={selectedKaId}
+        communicationScore={communicationScore}
+        setCommunicationScore={setCommunicationScore}
+        handleUpdateCommunicationScore={handleUpdateCommunicationScore}
       />
     </div>
   );

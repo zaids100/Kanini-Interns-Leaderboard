@@ -1,6 +1,6 @@
-import { LogOut } from "lucide-react";
+import { LogOut, Layers } from "lucide-react";
 
-export default function LeaderboardHeader({ user, onLogout, onProfileClick }) {
+export default function LeaderboardHeader({ user, onLogout, onProfileClick, batch, setBatch }) {
   return (
     <div className="bg-white border-b border-gray-200 shadow-sm fixed top-0 left-0 w-full z-30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -21,6 +21,19 @@ export default function LeaderboardHeader({ user, onLogout, onProfileClick }) {
 
           <div className="flex items-center space-x-4">
 
+            {/* Batch Selector */}
+            <div className="relative">
+              <Layers className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+              <select
+                value={batch}
+                onChange={(e) => setBatch(parseInt(e.target.value))}
+                className="cursor-pointer pl-9 sm:pl-10 pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-gray-50 focus:bg-white text-sm sm:text-base appearance-none"
+              >
+                <option value={1}>Batch 1</option>
+                <option value={2}>Batch 2</option>
+              </select>
+            </div>
+
             {/* Profile Button */}
             <button
               onClick={onProfileClick}
@@ -35,7 +48,7 @@ export default function LeaderboardHeader({ user, onLogout, onProfileClick }) {
             </button>
 
             {/* Logout Button */}
-            <button
+            <button 
               onClick={onLogout}
               className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors cursor-pointer"
             >

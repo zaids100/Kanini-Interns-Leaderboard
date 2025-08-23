@@ -14,12 +14,9 @@ export default function InternRow({
   const totalScore = getTotalScore(intern.score);
   const maxScore = getMaxScore(intern.score);
   const percentage = ((totalScore / maxScore) * 100).toFixed(1);
-  const isBottomFive = index >= 5 && percentage < 85;
 
   return (
-    <tr
-      className="transition-colors hover:bg-gray-50"
-    >
+    <tr className="transition-colors hover:bg-gray-50">
       {/* Rank */}
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="flex items-center">
@@ -94,7 +91,12 @@ export default function InternRow({
         </div>
       </td>
 
-      {/* Display Score - Only show when sorting by overall */}
+      {/* Communication */}
+      <td className="px-6 py-4 whitespace-nowrap">
+        <div className="text-sm text-center font-medium text-gray-800">{intern.communication || 'N/A'}</div>
+      </td>
+
+      {/* Total Score */}
       {showScoreColumn && (
         <td className="px-6 py-4 whitespace-nowrap text-right">
           <div className="text-lg font-bold text-gray-900">

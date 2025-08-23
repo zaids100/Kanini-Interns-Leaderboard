@@ -2,11 +2,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import { getAllInterns } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { useAdmin } from "../contexts/AdminContext";
-import { 
-  addModuleToIntern, 
-  updateModuleScore, 
-  addCertificationToIntern, 
-  updateLeetcodeStatsForIntern 
+import {
+  addModuleToIntern,
+  updateModuleScore,
+  addCertificationToIntern,
+  updateLeetcodeStatsForIntern,
+  updateCommunicationScoreForIntern
 } from "../services/adminApi";
 import ModulesAccordion from "../components/ModulesAccordion";
 import AdminHeader from "../components/AdminHeader";
@@ -24,16 +25,18 @@ const AdminDashboard = () => {
   const [addScore, setAddScore] = useState("");
   const [updateModuleNumber, setUpdateModuleNumber] = useState("");
   const [updateScoreValue, setUpdateScoreValue] = useState("");
-  
+  const [communicationScore, setCommunicationScore] = useState("");
+
+
   // New state variables for certifications
   const [certificationName, setCertificationName] = useState("");
   const [certificateLink, setCertificateLink] = useState("");
-  
+
   // New state variables for leetcode stats
   const [easyCount, setEasyCount] = useState("");
   const [mediumCount, setMediumCount] = useState("");
   const [hardCount, setHardCount] = useState("");
-  
+
   const navigate = useNavigate();
   const { admin, setAdmin, adminToken, setAdminToken } = useAdmin();
 
@@ -143,17 +146,17 @@ const AdminDashboard = () => {
       alert("Please select an intern first!");
       return;
     }
-    
+
     const leetcodeData = {};
     if (easyCount !== "") leetcodeData.easy = Number(easyCount);
     if (mediumCount !== "") leetcodeData.medium = Number(mediumCount);
     if (hardCount !== "") leetcodeData.hard = Number(hardCount);
-    
+
     if (Object.keys(leetcodeData).length === 0) {
       alert("Please fill at least one leetcode stat field!");
       return;
     }
-    
+
     try {
       await updateLeetcodeStatsForIntern(selectedKaId, leetcodeData);
       alert("Leetcode stats updated successfully");
@@ -166,6 +169,24 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleUpdateCommunicationScore = async () => {
+    if (!selectedKaId || communicationScore === "") {
+      alert("Please select an intern and enter a communication score!");
+      return;
+    }
+
+    try {
+      await updateCommunicationScoreForIntern(selectedKaId, {
+        communication: communicationScore
+      });
+      alert("Communication score updated successfully");
+      setCommunicationScore("");
+      await fetchInterns();
+    } catch (err) {
+      alert(err?.response?.data?.msg || "Error updating communication score");
+    }
+  };
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -173,10 +194,10 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       <AdminHeader onLogout={handleLogout} />
-      
+
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="grid lg:grid-cols-12 gap-8">
-          <InternsSidebar 
+          <InternsSidebar
             interns={interns}
             selectedKaId={selectedKaId}
             onSelectIntern={setSelectedKaId}
@@ -185,6 +206,15 @@ const AdminDashboard = () => {
           <section className="lg:col-span-8 xl:col-span-9 space-y-8">
             <InternDetails selectedIntern={selectedIntern} />
             <ModulesAccordion selectedIntern={selectedIntern} />
+            {/* Display communication score */}
+            {/* Display communication score */}
+            {selectedIntern && (
+              <div className="bg-white p-4 rounded-2xl shadow-md border border-gray-200">
+                <h2 className="text-lg font-semibold mb-2">
+                  Communication Score: {selectedIntern.communication || "Not set"}
+                </h2>
+              </div>
+            )}
             <AdminForms
               selectedKaId={selectedKaId}
               addModuleNumber={addModuleNumber}
@@ -211,6 +241,9 @@ const AdminDashboard = () => {
               hardCount={hardCount}
               setHardCount={setHardCount}
               handleUpdateLeetcodeStats={handleUpdateLeetcodeStats}
+              communicationScore={communicationScore}
+              setCommunicationScore={setCommunicationScore}
+              handleUpdateCommunicationScore={handleUpdateCommunicationScore}
             />
           </section>
         </div>

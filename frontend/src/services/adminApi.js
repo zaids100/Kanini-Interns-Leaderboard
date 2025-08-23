@@ -2,6 +2,7 @@ import axios from "axios";
 
 const API = axios.create({
   baseURL: "https://kanini-interns-leaderboard.onrender.com/api/admin",
+  // baseURL: "http://localhost:3000/api/admin",
 });
 
 // Attach token automatically for protected routes
@@ -36,3 +37,6 @@ export const updateCertificationForIntern = (ka_id, certificationName, certifica
 // Update leetcode stats for a specific intern
 export const updateLeetcodeStatsForIntern = (ka_id, leetcodeData) =>
   API.put(`/interns/${ka_id}/leetcode-stats`, leetcodeData);
+
+export const updateCommunicationScoreForIntern = (ka_id, communicationData) =>
+  API.put(`/interns/${ka_id}/communication`, communicationData);

@@ -28,7 +28,7 @@ export default function InternsSidebar({ interns, selectedKaId, onSelectIntern }
                 <div className="flex items-center space-x-3">
                   <div className="relative">
                     <img
-                      src={intern.profilePic}
+                      src={intern.profilePic || "https://via.placeholder.com/150"}
                       alt={intern.name}
                       className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-lg"
                     />
