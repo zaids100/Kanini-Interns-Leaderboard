@@ -1,18 +1,30 @@
-const Intern = require('../models/intern.model');
+// const Intern = require('../models/intern.model');
+const IntegratedIntern = require('../models/integrated_intern.model')
 
 const getAllInternsData = async (req, res) => {
     try {
-        const data = await Intern.find({}, { password: 0, __v: 0 });
+        // Get batch from query params (optional)
+        const batch = req.query.batch ? Number(req.query.batch) : null;
+
+        // Build filter
+        const filter = batch ? { batch } : {};
+
+        // Fetch interns with optional batch filter, exclude password and __v
+        const data = await IntegratedIntern.find(filter, { password: 0, __v: 0 });
+
         res.status(200).json({ interns: data });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
 
+// module.exports = { getAllInternsData };
+
+
 const getInternById = async (req, res) => {
     try {
         const { ka_id } = req.params;
-        const intern = await Intern.findOne({ ka_id }, { password: 0, __v: 0 });
+        const intern = await IntegratedIntern.findOne({ ka_id }, { password: 0, __v: 0 });
         if (!intern) {
             return res.status(404).json({ msg: 'Intern not found' });
         }
@@ -30,7 +42,7 @@ const uploadProfilePic = async (req, res) => {
 
         const imageUrl = req.file.path;
         console.log(imageUrl);
-        const updatedIntern = await Intern.findOneAndUpdate(
+        const updatedIntern = await IntegratedIntern.findOneAndUpdate(
             { ka_id: req.user.ka_id },
             { profilePic: imageUrl },
             { new: true }
@@ -62,7 +74,7 @@ const addCertificationToIntern = async (req, res) => {
             return res.status(400).json({ error: 'Both certification name and link are required' });
         }
 
-        const intern = await Intern.findOne({ ka_id });
+        const intern = await IntegratedIntern.findOne({ ka_id });
         if (!intern) {
             return res.status(404).json({ error: 'Intern not found' });
         }
@@ -103,7 +115,7 @@ const updateCertificationForIntern = async (req, res) => {
             return res.status(400).json({ error: 'Both certification name and link are required' });
         }
 
-        const intern = await Intern.findOne({ ka_id });
+        const intern = await IntegratedIntern.findOne({ ka_id });
         if (!intern) {
             return res.status(404).json({ error: 'Intern not found' });
         }
@@ -141,7 +153,7 @@ const deleteCertificationForIntern = async (req, res) => {
             return res.status(403).json({ error: 'You can only update your own profile' });
         }
 
-        const intern = await Intern.findOne({ ka_id });
+        const intern = await IntegratedIntern.findOne({ ka_id });
         if (!intern) {
             return res.status(404).json({ error: 'Intern not found' });
         }

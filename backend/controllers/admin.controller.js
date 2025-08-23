@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const Admin = require('../models/admin.model');
-const Intern=require('../models/intern.model');
+// const Intern=require('../models/intern.model');
+const IntegratedIntern=require('../models/integrated_intern.model');
 const SECRET_KEY = process.env.JWT_SECRET || 'your_secret_key';
 
 const login = async (req, res) => {
@@ -52,7 +53,7 @@ const addModuleAndScoreByInternIdAndModuleId = async (req, res) => {
         const { moduleNumber, moduleName, score } = req.body;
         const { ka_id } = req.params;
 
-        const intern = await Intern.findOne({ ka_id });
+        const intern = await IntegratedIntern.findOne({ ka_id });
         if (!intern) {
             return res.status(404).json({ msg: 'Intern not found' });
         }
@@ -80,7 +81,7 @@ const updateScoreByInternIdAndModuleId = async (req, res) => {
         const { score } = req.body;
         const { ka_id, moduleNumber } = req.params;
 
-        const intern = await Intern.findOne({ ka_id });
+        const intern = await IntegratedIntern.findOne({ ka_id });
         if (!intern) {
             return res.status(404).json({ msg: 'Intern not found' });
         }
@@ -111,7 +112,7 @@ const addCertificationToIntern = async (req, res) => {
             return res.status(400).json({ msg: 'certification_name and certificate_link are required' });
         }
 
-        const intern = await Intern.findOne({ ka_id });
+        const intern = await IntegratedIntern.findOne({ ka_id });
         if (!intern) {
             return res.status(404).json({ msg: 'Intern not found' });
         }
@@ -143,7 +144,7 @@ const updateCertificationForIntern = async (req, res) => {
             return res.status(400).json({ msg: 'certificate_link is required' });
         }
 
-        const intern = await Intern.findOne({ ka_id });
+        const intern = await IntegratedIntern.findOne({ ka_id });
         if (!intern) {
             return res.status(404).json({ msg: 'Intern not found' });
         }
@@ -174,7 +175,7 @@ const updateLeetcodeStatsForIntern = async (req, res) => {
             return res.status(400).json({ msg: 'At least one leetcode stat field is required' });
         }
 
-        const intern = await Intern.findOne({ ka_id });
+        const intern = await IntegratedIntern.findOne({ ka_id });
         if (!intern) {
             return res.status(404).json({ msg: 'Intern not found' });
         }
@@ -192,11 +193,45 @@ const updateLeetcodeStatsForIntern = async (req, res) => {
     }
 };
 
+const updateCommunicationScore = async (req, res) => {
+  const { ka_id } = req.params;
+  const { communication } = req.body;
+  const validCommunicationLevels = ["A1", "A2", "B1", "B2", "C1", "C2"];
+
+
+  // Validate that communication is one of the allowed strings
+  if (!communication || !validCommunicationLevels.includes(communication)) {
+    return res
+      .status(400)
+      .json({ msg: "Communication score must be one of: A1, A2, B1, B2, C1, C2" });
+  }
+
+  try {
+    const intern = await IntegratedIntern.findOne({ ka_id });
+    if (!intern) {
+      return res.status(404).json({ msg: "Intern not found" });
+    }
+
+    // Update or add communication score
+    intern.communication = communication;
+
+    await intern.save();
+    return res.status(200).json({
+      msg: "Communication score updated successfully",
+      intern,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ msg: "Server error" });
+  }
+};
+
 module.exports = { 
     login,
     addModuleAndScoreByInternIdAndModuleId,
     updateScoreByInternIdAndModuleId,
     addCertificationToIntern,
     updateCertificationForIntern,
-    updateLeetcodeStatsForIntern
+    updateLeetcodeStatsForIntern,
+    updateCommunicationScore
 };

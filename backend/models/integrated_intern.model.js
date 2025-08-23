@@ -75,9 +75,18 @@ const internSchema = new mongoose.Schema({
     type: String,
     enum: ['intern', 'admin'], 
     default: 'intern'
+  },
+  batch: {
+    type: Number,
+    default: 1
+  },
+  communication: {
+    type: String,
+    enum: ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'],
+    default: 'B2'
   }
 });
 
-const Intern = mongoose.model('Intern', internSchema, 'Interns');
+const IntegratedIntern = mongoose.model('IntegratedIntern', internSchema, 'integrated_interns');
 
-module.exports = Intern;
+module.exports = IntegratedIntern;

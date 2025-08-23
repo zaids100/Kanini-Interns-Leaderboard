@@ -6,7 +6,8 @@ const {
     updateScoreByInternIdAndModuleId,
     addCertificationToIntern,
     updateCertificationForIntern,
-    updateLeetcodeStatsForIntern
+    updateLeetcodeStatsForIntern,
+    updateCommunicationScore
 } = require('../controllers/admin.controller');
 
 router.post('/auth/login',login);
@@ -20,4 +21,6 @@ router.put('/interns/:ka_id/certifications/:certification_name', adminAuth, upda
 // Leetcode stats routes
 router.put('/interns/:ka_id/leetcode-stats', adminAuth, updateLeetcodeStatsForIntern);
 
+//comms routes
+router.put("/interns/:ka_id/communication", adminAuth, updateCommunicationScore);
 module.exports = router;
