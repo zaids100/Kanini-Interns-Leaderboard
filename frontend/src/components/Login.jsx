@@ -3,6 +3,7 @@ import { User, Lock, AlertCircle, Layers } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
 import { login } from "../services/api";
+import kanini_academy_logo from '../assets/kalogo.png' 
 
 export default function Login() {
   const [ka_id, setKaId] = useState("");
@@ -63,7 +64,7 @@ export default function Login() {
         {/* Left side - branding */}
         <div className="flex flex-col items-center lg:items-start text-center lg:text-left order-2 lg:order-1">
           <img
-            src="https://kanini.com/wp-content/uploads/2022/06/Kanini-Logo.svg"
+            src={kanini_academy_logo}
             alt="Kanini Logo"
             className="w-[200px] sm:w-[240px] lg:w-[280px] mb-4 sm:mb-6"
           />
