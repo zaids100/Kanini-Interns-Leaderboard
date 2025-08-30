@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+
 const scoreSchema = new mongoose.Schema({
   moduleNumber: {
     type: String,
@@ -41,6 +42,13 @@ const leetcodeStatsSchema = new mongoose.Schema({
   }
 }, { _id: false });
 
+const communicationSchema = new mongoose.Schema({
+  grammar: { type: Number, default: 0.0 },
+  proactiveness: { type: Number, default: 0.0 },
+  fluency: { type: Number, default: 0.0 }
+}, { _id: false });
+
+
 const internSchema = new mongoose.Schema({
   ka_id: {
     type: String,
@@ -81,9 +89,8 @@ const internSchema = new mongoose.Schema({
     default: 1
   },
   communication: {
-    type: String,
-    enum: ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'],
-    default: 'B2'
+    type: communicationSchema,  
+    default: { grammar: 0.0, proactiveness: 0.0, fluency: 0.0 }
   }
 });
 
