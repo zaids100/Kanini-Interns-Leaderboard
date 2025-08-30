@@ -194,36 +194,56 @@ const updateLeetcodeStatsForIntern = async (req, res) => {
 };
 
 const updateCommunicationScore = async (req, res) => {
-  const { ka_id } = req.params;
-  const { communication } = req.body;
-  const validCommunicationLevels = ["A1", "A2", "B1", "B2", "C1", "C2"];
+    const { ka_id } = req.params;
+    const { grammar, proactiveness, fluency } = req.body;
 
-
-  // Validate that communication is one of the allowed strings
-  if (!communication || !validCommunicationLevels.includes(communication)) {
-    return res
-      .status(400)
-      .json({ msg: "Communication score must be one of: A1, A2, B1, B2, C1, C2" });
-  }
-
-  try {
-    const intern = await IntegratedIntern.findOne({ ka_id });
-    if (!intern) {
-      return res.status(404).json({ msg: "Intern not found" });
+    // Validate input: all should be numbers and within expected ranges
+    if (
+        grammar === undefined ||
+        proactiveness === undefined ||
+        fluency === undefined ||
+        isNaN(grammar) ||
+        isNaN(proactiveness) ||
+        isNaN(fluency)
+    ) {
+        return res.status(400).json({
+            msg: "All communication fields (grammar, proactiveness, fluency) are required and must be numbers."
+        });
     }
 
-    // Update or add communication score
-    intern.communication = communication;
+    // Optionally, add range checks (e.g., grammar/proactiveness: 0-20, fluency: 0-10)
+    if (
+        grammar < 0 || grammar > 20 ||
+        proactiveness < 0 || proactiveness > 20 ||
+        fluency < 0 || fluency > 10
+    ) {
+        return res.status(400).json({
+            msg: "Grammar and proactiveness must be 0-20, fluency must be 0-10."
+        });
+    }
 
-    await intern.save();
-    return res.status(200).json({
-      msg: "Communication score updated successfully",
-      intern,
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ msg: "Server error" });
-  }
+    try {
+        const intern = await IntegratedIntern.findOne({ ka_id });
+        if (!intern) {
+            return res.status(404).json({ msg: "Intern not found" });
+        }
+
+        // Update or add communication scores
+        intern.communication = {
+            grammar: Number(grammar),
+            proactiveness: Number(proactiveness),
+            fluency: Number(fluency)
+        };
+
+        await intern.save();
+        return res.status(200).json({
+            msg: "Communication scores updated successfully",
+            intern,
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ msg: "Server error" });
+    }
 };
 
 module.exports = { 
