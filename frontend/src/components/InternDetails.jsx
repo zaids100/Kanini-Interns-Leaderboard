@@ -28,7 +28,7 @@ export default function InternDetails({ selectedIntern }) {
             </div>
           </div>
 
-          {/* Leetcode Stats */}
+          {/* Leetcode Stats
           <div className="p-6 bg-gradient-to-r from-orange-50 to-red-50 rounded-xl border border-orange-100">
             <h4 className="text-lg font-semibold text-slate-800 mb-4 flex items-center space-x-2">
               <Code className="w-5 h-5 text-orange-500" />
@@ -53,10 +53,10 @@ export default function InternDetails({ selectedIntern }) {
                 Total: <span className="font-semibold">{(selectedIntern.leetcode_stats?.easy || 0) + (selectedIntern.leetcode_stats?.medium || 0) + (selectedIntern.leetcode_stats?.hard || 0)}</span> problems solved
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Certifications */}
-          <div className="p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100">
+          {/* <div className="p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100">
             <h4 className="text-lg font-semibold text-slate-800 mb-4 flex items-center space-x-2">
               <Award className="w-5 h-5 text-green-500" />
               <span>Certifications ({selectedIntern.certifications?.length || 0})</span>
@@ -82,7 +82,7 @@ export default function InternDetails({ selectedIntern }) {
                 <p>No certifications yet</p>
               </div>
             )}
-          </div>
+          </div> */}
         </div>
       )}
     </div>

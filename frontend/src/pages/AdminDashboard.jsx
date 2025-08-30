@@ -25,8 +25,11 @@ const AdminDashboard = () => {
   const [addScore, setAddScore] = useState("");
   const [updateModuleNumber, setUpdateModuleNumber] = useState("");
   const [updateScoreValue, setUpdateScoreValue] = useState("");
-  const [communicationScore, setCommunicationScore] = useState("");
 
+  // ✅ new comms fields
+  const [grammar, setGrammar] = useState("");
+  const [proactiveness, setProactiveness] = useState("");
+  const [fluency, setFluency] = useState("");
 
   // New state variables for certifications
   const [certificationName, setCertificationName] = useState("");
@@ -170,17 +173,21 @@ const AdminDashboard = () => {
   };
 
   const handleUpdateCommunicationScore = async () => {
-    if (!selectedKaId || communicationScore === "") {
-      alert("Please select an intern and enter a communication score!");
+    if (!selectedKaId) {
+      alert("Please select an intern and enter communication scores!");
       return;
     }
 
     try {
       await updateCommunicationScoreForIntern(selectedKaId, {
-        communication: communicationScore
+        grammar: grammar !== "" ? Number(grammar) : 0,
+        proactiveness: proactiveness !== "" ? Number(proactiveness) : 0,
+        fluency: fluency !== "" ? Number(fluency) : 0,
       });
-      alert("Communication score updated successfully");
-      setCommunicationScore("");
+      alert("Communication scores updated successfully");
+      setGrammar("");
+      setProactiveness("");
+      setFluency("");
       await fetchInterns();
     } catch (err) {
       alert(err?.response?.data?.msg || "Error updating communication score");
@@ -206,15 +213,63 @@ const AdminDashboard = () => {
           <section className="lg:col-span-8 xl:col-span-9 space-y-8">
             <InternDetails selectedIntern={selectedIntern} />
             <ModulesAccordion selectedIntern={selectedIntern} />
-            {/* Display communication score */}
-            {/* Display communication score */}
-            {selectedIntern && (
+
+            {/* ✅ Communication Section */}
+            {selectedIntern && selectedIntern.communication && (
               <div className="bg-white p-4 rounded-2xl shadow-md border border-gray-200">
-                <h2 className="text-lg font-semibold mb-2">
-                  Communication Score: {selectedIntern.communication || "Not set"}
-                </h2>
+                <h2 className="text-lg font-semibold mb-4">Communication Scores</h2>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  {["grammar", "proactiveness", "fluency"].map((field) => (
+                    <div
+                      key={field}
+                      className="bg-gray-50 p-3 rounded-lg text-center"
+                    >
+                      <p className="text-sm text-gray-500 capitalize">{field}</p>
+                      <p
+                        className={`text-lg font-bold ${selectedIntern.communication[field] >= 15 // 75% of max
+                            ? "text-green-600"
+                            : selectedIntern.communication[field] >=
+                              (field === "fluency" ? 5 : 10) // 50% of max
+                              ? "text-yellow-600"
+                              : "text-red-600"
+                          }`}
+                      >
+                        {selectedIntern.communication[field] ?? "N/A"}
+                        <span className="text-xs text-gray-400">
+                          {" "}
+                          /{field === "fluency" ? 10 : 20}
+                        </span>
+                      </p>
+                    </div>
+                  ))}
+
+                  {/* ✅ Overall Percentage */}
+                  <div className="bg-gray-50 p-3 rounded-lg text-center">
+                    <p className="text-sm text-gray-500">Overall %</p>
+                    {(() => {
+                      const comm = selectedIntern.communication;
+                      const total = (comm.grammar || 0) + (comm.proactiveness || 0) + (comm.fluency || 0);
+                      const percentage = (total / 50) * 100;
+
+                      return (
+                        <p
+                          className={`text-lg font-bold ${percentage >= 75
+                              ? "text-green-600"
+                              : percentage >= 50
+                                ? "text-yellow-600"
+                                : "text-red-600"
+                            }`}
+                        >
+                          {percentage.toFixed(1)}%
+                        </p>
+                      );
+                    })()}
+                  </div>
+                </div>
               </div>
             )}
+
+
             <AdminForms
               selectedKaId={selectedKaId}
               addModuleNumber={addModuleNumber}
@@ -241,8 +296,13 @@ const AdminDashboard = () => {
               hardCount={hardCount}
               setHardCount={setHardCount}
               handleUpdateLeetcodeStats={handleUpdateLeetcodeStats}
-              communicationScore={communicationScore}
-              setCommunicationScore={setCommunicationScore}
+              // ✅ pass new comms props
+              grammar={grammar}
+              setGrammar={setGrammar}
+              proactiveness={proactiveness}
+              setProactiveness={setProactiveness}
+              fluency={fluency}
+              setFluency={setFluency}
               handleUpdateCommunicationScore={handleUpdateCommunicationScore}
             />
           </section>

@@ -38,5 +38,11 @@ export const updateCertificationForIntern = (ka_id, certificationName, certifica
 export const updateLeetcodeStatsForIntern = (ka_id, leetcodeData) =>
   API.put(`/interns/${ka_id}/leetcode-stats`, leetcodeData);
 
+// Update communication scores for a specific intern
+// communicationData should be an object: { grammar, proactiveness, fluency }
 export const updateCommunicationScoreForIntern = (ka_id, communicationData) =>
-  API.put(`/interns/${ka_id}/communication`, communicationData);
+  API.put(`/interns/${ka_id}/communication`, {
+    grammar: communicationData.grammar,
+    proactiveness: communicationData.proactiveness,
+    fluency: communicationData.fluency
+  });

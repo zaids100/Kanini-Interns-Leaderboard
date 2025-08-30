@@ -30,8 +30,12 @@ export default function AdminForms({
   hardCount,
   setHardCount,
   handleUpdateLeetcodeStats,
-  communicationScore,
-  setCommunicationScore,
+  grammar,
+  setGrammar,
+  proactiveness,
+  setProactiveness,
+  fluency,
+  setFluency,
   handleUpdateCommunicationScore
 }) {
   return (
@@ -74,8 +78,12 @@ export default function AdminForms({
       />
       <UpdateCommunicationScore
         selectedKaId={selectedKaId}
-        communicationScore={communicationScore}
-        setCommunicationScore={setCommunicationScore}
+        grammar={grammar}
+        setGrammar={setGrammar}
+        proactiveness={proactiveness}
+        setProactiveness={setProactiveness}
+        fluency={fluency}
+        setFluency={setFluency}
         handleUpdateCommunicationScore={handleUpdateCommunicationScore}
       />
     </div>
