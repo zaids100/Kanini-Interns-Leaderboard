@@ -6,6 +6,7 @@ import ModulePerformance from './ModulePerformance';
 import CertificationsSection from './CertificationsSection';
 import LeetcodeStats from './LeetcodeStats';
 import QuickStats from './QuickStats';
+import CommunicationSection from './CommunicationSection';
 
 export default function Profile() {
     const { user, setUser, token, setToken } = useUser();
@@ -116,6 +117,7 @@ export default function Profile() {
                         />
                         <LeetcodeStats user={user} />
                         <QuickStats user={user} />
+                        <CommunicationSection user={user} />
                     </div>
                 </div>
             </div>

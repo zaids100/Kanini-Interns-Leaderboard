@@ -32,7 +32,7 @@ export default function LeaderboardTable({
               </th>
               {showScoreColumn && (
                 <th className="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Total Score
+                   Modules Percentage
                 </th>
               )}
             </tr>

@@ -13,7 +13,8 @@ export default function Leaderboard() {
     const [isLoading, setIsLoading] = useState(true);
     const [sortBy, setSortBy] = useState('overall');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [batch, setBatch] = useState(1); // batch state
+    const [batch, setBatch] = useState(1);
+    const [searchTerm, setSearchTerm] = useState(""); // search state
 
     const { user, token, setUser, setToken } = useUser();
     const navigate = useNavigate();
@@ -24,7 +25,6 @@ export default function Leaderboard() {
                 setIsLoading(false);
                 return;
             }
-
             try {
                 setIsLoading(true);
                 const res = await getAllInterns(token, batch);
@@ -36,7 +36,6 @@ export default function Leaderboard() {
                 setIsLoading(false);
             }
         };
-
         fetchInterns();
     }, [token, batch]);
 
@@ -50,14 +49,12 @@ export default function Leaderboard() {
         navigate("/profile");
     };
 
-    const getTotalScore = (scores) => {
-        return scores.reduce((total, score) => total + score.score, 0);
+    const getCommunicationScore = (communication = {}) => {
+        return (communication.grammar || 0) + (communication.proactiveness || 0) + (communication.fluency || 0);
     };
 
-    const getMaxScore = (scores) => {
-        return scores.length * 100;
-    };
-
+    const getTotalScore = (scores) => scores.reduce((total, score) => total + score.score, 0);
+    const getMaxScore = (scores) => scores.length * 100;
     const getModuleScore = (scoreArray, moduleNumber) => {
         const module = scoreArray.find((s) => s.moduleNumber === moduleNumber.toString());
         return module ? module.score : 0;
@@ -80,6 +77,8 @@ export default function Leaderboard() {
 
         if (sortBy === 'overall') {
             return sortedData.sort((a, b) => getTotalScore(b.score) - getTotalScore(a.score));
+        } else if (sortBy === 'comms') {
+            return sortedData.sort((a, b) => getCommunicationScore(b.communication) - getCommunicationScore(a.communication));
         } else {
             const moduleNumber = parseInt(sortBy.replace('module-', ''));
             const internsWithModule = sortedData.filter(intern =>
@@ -94,10 +93,17 @@ export default function Leaderboard() {
         }
     };
 
-    const sortedInterns = getSortedInterns();
+
+    //  Apply search filter on top of sorted interns
+    const sortedInterns = getSortedInterns().filter(intern =>
+        intern.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     const getSortOptions = () => {
-        const options = [{ value: 'overall', label: 'Overall Score' }];
+        const options = [
+            { value: 'overall', label: 'Overall Score' },
+            { value: 'comms', label: 'Communication Score' },  
+        ];
         availableModules.forEach(moduleNum => {
             const moduleData = interns.find(intern =>
                 intern.score.find(s => s.moduleNumber === moduleNum)
@@ -128,6 +134,8 @@ export default function Leaderboard() {
                 onProfileClick={handleProfileClick}
                 batch={batch}
                 setBatch={setBatch}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
             />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-32">
