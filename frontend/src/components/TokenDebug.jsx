@@ -23,6 +23,7 @@ export default function TokenDebug() {
     setUser(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    // adding a comment here to check render 
   };
 
   const restoreToken = () => {
