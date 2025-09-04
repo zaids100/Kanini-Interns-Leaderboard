@@ -147,7 +147,7 @@ export default function InternRow({
 
               return (
                 <div className="flex items-center justify-between px-3 py-1 rounded-lg bg-gray-50">
-                  <span className="text-sm font-medium text-gray-700">Overall Percentage</span>
+                  <span className="text-sm font-medium text-gray-700">Overall %</span>
                   <span
                     className={`text-sm font-bold px-2 py-0.5 rounded-full ${color}`}
                   >
