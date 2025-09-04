@@ -1,4 +1,4 @@
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import RankIcon from "./RankIcon";
 
@@ -105,14 +105,14 @@ export default function InternRow({
               let color = "bg-green-100 text-green-800";
 
               if (
-                (item.label !== "Fluency" && item.value < 12.5) ||
+                (item.label !== "Fluency" && item.value <= 11.4) ||
                 (item.label === "Fluency" && item.value <= 6.4)
               ) {
                 color = "bg-red-100 text-red-800";
               } else if (
                 (item.label !== "Fluency" &&
-                  item.value >= 12.5 &&
-                  item.value <= 16.4) ||
+                  item.value >= 11.5 &&
+                  item.value <= 15.4) ||
                 (item.label === "Fluency" &&
                   item.value >= 6.5 &&
                   item.value <= 8.4)
@@ -143,11 +143,11 @@ export default function InternRow({
                 intern.communication.grammar +
                 intern.communication.proactiveness +
                 intern.communication.fluency;
-              const maxTotal = 20 + 20 + 10; // 50
+              const maxTotal = 50;
               const commsPercent = ((total / maxTotal) * 100).toFixed(1);
 
               let color = "bg-green-100 text-green-800";
-              if (commsPercent < 60.5) color = "bg-red-100 text-red-800";
+              if (commsPercent <= 60.4) color = "bg-red-100 text-red-800";
               else if (commsPercent >= 60.5 && commsPercent <= 79.4)
                 color = "bg-amber-100 text-amber-800";
 
