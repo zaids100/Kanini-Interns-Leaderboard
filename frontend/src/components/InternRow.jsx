@@ -97,27 +97,21 @@ export default function InternRow({
         {intern.communication ? (
           <div className="space-y-2">
             {/* Grammar, Proactiveness, Fluency */}
-            {[
+            {[ 
               { label: "Grammar", value: intern.communication.grammar, max: 20 },
               { label: "Proactiveness", value: intern.communication.proactiveness, max: 20 },
               { label: "Fluency", value: intern.communication.fluency, max: 10 },
             ].map((item, idx) => {
-              let color = "bg-green-100 text-green-800";
+              let color = "bg-green-100 text-green-800"; // default green
 
-              if (
-                (item.label !== "Fluency" && item.value <= 11.4) ||
-                (item.label === "Fluency" && item.value <= 6.4)
-              ) {
-                color = "bg-red-100 text-red-800";
-              } else if (
-                (item.label !== "Fluency" &&
-                  item.value >= 11.5 &&
-                  item.value <= 15.4) ||
-                (item.label === "Fluency" &&
-                  item.value >= 6.5 &&
-                  item.value <= 8.4)
-              ) {
-                color = "bg-amber-100 text-amber-800";
+              if (item.label === "Fluency") {
+                if (item.value <= 6.4) color = "bg-red-100 text-red-800";
+                else if (item.value >= 6.5 && item.value <= 8.4) color = "bg-amber-100 text-amber-800";
+                else if (item.value >= 8.5) color = "bg-green-100 text-green-800";
+              } else {
+                if (item.value <= 11.4) color = "bg-red-100 text-red-800";
+                else if (item.value >= 11.5 && item.value <= 15.4) color = "bg-amber-100 text-amber-800";
+                else if (item.value >= 15.5) color = "bg-green-100 text-green-800";
               }
 
               return (
@@ -146,10 +140,10 @@ export default function InternRow({
               const maxTotal = 50;
               const commsPercent = ((total / maxTotal) * 100).toFixed(1);
 
-              let color = "bg-green-100 text-green-800";
+              let color = "bg-green-100 text-green-800"; // default green
               if (commsPercent <= 60.4) color = "bg-red-100 text-red-800";
-              else if (commsPercent >= 60.5 && commsPercent <= 79.4)
-                color = "bg-amber-100 text-amber-800";
+              else if (commsPercent >= 60.5 && commsPercent <= 79.4) color = "bg-amber-100 text-amber-800";
+              else if (commsPercent >= 79.5) color = "bg-green-100 text-green-800";
 
               return (
                 <div className="flex items-center justify-between px-3 py-1 rounded-lg bg-gray-50">
