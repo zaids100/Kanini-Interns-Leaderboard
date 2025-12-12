@@ -9,7 +9,7 @@ const leaderboardRoutes = require('./routes/intern.route');
 const adminRoutes = require('./routes/admin.route');
 
 // const authenticateJWT = require('./middlewares/auth.middleware');
-
+//cors added
 const corsOptions = {
   origin: [process.env.ALLOWED_ORIGIN,"http://localhost:5173"],
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
